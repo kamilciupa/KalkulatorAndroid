@@ -17,6 +17,7 @@ public class SimpleCalculator extends AppCompatActivity {
     private double val2;
     private String symbol;
     private boolean dotInside;
+    private boolean equalActive;
 
 
 
@@ -32,21 +33,29 @@ public class SimpleCalculator extends AppCompatActivity {
         val1 = Double.NaN;
         val2 = Double.NaN;
         dotInside = false;
+        equalActive = true;
     }
 
-    /*
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
 
-        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
-            this.setContentView(R.layout.activity_simple_calculator_hor);
-       else
-            this.setContentView(R.layout.activity_simple_calculator);
-
-
+        savedInstanceState.putDouble("val1", val1);
+        savedInstanceState.putDouble("val2", val2);
+        savedInstanceState.putString("symbol", symbol);
+        savedInstanceState.putBoolean("dot", dotInside);
+        savedInstanceState.putBoolean("equal", equalActive);
     }
-*/
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        val1 = savedInstanceState.getDouble("val1");
+        val2 = savedInstanceState.getDouble("val2");
+        symbol = savedInstanceState.getString("symbol");
+        dotInside = savedInstanceState.getBoolean("dot");
+        equalActive = savedInstanceState.getBoolean("equal");
+    }
 
     public boolean isANumber() {
         if (calc.getText().length() > 0) {
@@ -77,10 +86,15 @@ public class SimpleCalculator extends AppCompatActivity {
 
     public void clearScreen(View view) {
         calc.setText("");
+        clear();
+    }
+
+    public void clear(){
         symbol = "";
         val1 = Double.NaN;
         val2 = Double.NaN;
         dotInside = false;
+        equalActive = true;
     }
 
     public void changeSign(View view) {
@@ -110,12 +124,13 @@ public class SimpleCalculator extends AppCompatActivity {
         Button button = (Button) view;
 
         if(calc.getText().length() != 0 && isANumber()) {
+
             symbol = button.getText().toString();
             val1 = Double.parseDouble(calc.getText().toString());
             calc.setText("");
             dotInside = false;
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -124,32 +139,39 @@ public class SimpleCalculator extends AppCompatActivity {
             if (calc.getText().length() != 0 && isANumber()) {
                 val2 = Double.parseDouble(calc.getText().toString() );
 
-                switch(symbol) {
-                    case "+":
-                        val1 = val1 + val2;
-                         break;
-                    case "-":
-                        val1 = val1 - val2;
-                        break;
-                    case "*":
-                        val1 = val1 * val2;
-                        break;
-                    case "/":
-                        if(val2 != 0)
-                            val1 = val1 / val2;
-                        else {
-                            Toast.makeText(this, "Do Not Divide By 0", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        break;
-                }
+                    switch (symbol) {
+                        case "+":
+                            val1 = val1 + val2;
+
+                            break;
+                        case "-":
+                            val1 = val1 - val2;
+
+                            break;
+                        case "*":
+                            val1 = val1 * val2;
+
+                            break;
+                        case "/":
+                            if (val2 != 0) {
+                                val1 = val1 / val2;
+
+                            }else {
+                                Toast.makeText(this, "Do Not Divide By 0", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            break;
+                    }
 
                 calc.setText(String.valueOf(val1));
+                clear();
             } else {
                 calc.setText(String.valueOf(val1));
+                clear();
             }
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
+            clear();
         }
     }
 

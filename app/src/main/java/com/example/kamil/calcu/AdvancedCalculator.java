@@ -17,6 +17,7 @@ public class AdvancedCalculator extends AppCompatActivity {
     private double val2;
     private String symbol;
     private boolean dotInside;
+    private boolean equalActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,18 +31,29 @@ public class AdvancedCalculator extends AppCompatActivity {
         val1 = Double.NaN;
         val2 = Double.NaN;
         dotInside = false;
+        equalActive = true;
     }
-/*
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
 
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
-            this.setContentView(R.layout.activity_advanced_calculator_hor);
-        else
-            this.setContentView(R.layout.activity_simple_calculator);
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putDouble("val1", val1);
+        savedInstanceState.putDouble("val2", val2);
+        savedInstanceState.putString("symbol", symbol);
+        savedInstanceState.putBoolean("dot", dotInside);
+        savedInstanceState.putBoolean("equal", equalActive);
     }
-*/
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        val1 = savedInstanceState.getDouble("val1");
+        val2 = savedInstanceState.getDouble("val2");
+        symbol = savedInstanceState.getString("symbol");
+        dotInside = savedInstanceState.getBoolean("dot");
+        equalActive = savedInstanceState.getBoolean("equal");
+    }
 
 
     public boolean isANumber() {
@@ -74,7 +86,7 @@ public class AdvancedCalculator extends AppCompatActivity {
             calc.setText(String.valueOf(val1));
             val1 = Double.NaN;
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -87,7 +99,7 @@ public class AdvancedCalculator extends AppCompatActivity {
             calc.setText(String.valueOf(val1));
             val1 = Double.NaN;
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -99,7 +111,7 @@ public class AdvancedCalculator extends AppCompatActivity {
             calc.setText(String.valueOf(val1));
             val1 = Double.NaN;
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -110,7 +122,7 @@ public class AdvancedCalculator extends AppCompatActivity {
             calc.setText(String.valueOf(val1));
             val1 = Double.NaN;
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -122,10 +134,10 @@ public class AdvancedCalculator extends AppCompatActivity {
                 calc.setText(String.valueOf(val1));
                 val1 = Double.NaN;
             } else {
-                Toast.makeText(this, "Wrong input", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Wrong input", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -136,7 +148,7 @@ public class AdvancedCalculator extends AppCompatActivity {
             calc.setText(String.valueOf(val1));
             val1 = Double.NaN;
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -148,10 +160,10 @@ public class AdvancedCalculator extends AppCompatActivity {
                 calc.setText(String.valueOf(val1));
                 val1 = Double.NaN;
             } else {
-                Toast.makeText(this, "Wrong input" , Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Wrong input" , Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -163,10 +175,15 @@ public class AdvancedCalculator extends AppCompatActivity {
 
     public void clearScreen(View view) {
         calc.setText("");
+        clear();
+    }
+
+    public void clear(){
         symbol = "";
         val1 = Double.NaN;
         val2 = Double.NaN;
         dotInside = false;
+        equalActive = true;
     }
 
     public void changeSign(View view) {
@@ -196,14 +213,13 @@ public class AdvancedCalculator extends AppCompatActivity {
         Button button = (Button) view;
 
         if(calc.getText().length() != 0) {
-            if(button.getId() == R.id.bPowerXY)
-                symbol = "^";
-            symbol = button.getText().toString();
+            if(button.getId() == R.id.bPowerXY){symbol = "^";} else {
+            symbol = button.getText().toString();}
             val1 = Double.parseDouble(calc.getText().toString());
             calc.setText("");
             dotInside = false;
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -211,36 +227,41 @@ public class AdvancedCalculator extends AppCompatActivity {
         if(!Double.isNaN(val1)) {
             if (calc.getText().length() != 0 && isANumber()) {
                 val2 = Double.parseDouble(calc.getText().toString());
-
-                switch(symbol) {
+                switch (symbol) {
                     case "+":
                         val1 = val1 + val2;
+
                         break;
                     case "-":
                         val1 = val1 - val2;
+
                         break;
                     case "*":
                         val1 = val1 * val2;
+
                         break;
                     case "/":
-                        if(val2 != 0)
+                        if (val2 != 0) {
                             val1 = val1 / val2;
-                        else {
-                            Toast.makeText(this, "Do Not Divide By 0", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "Do Not Divide By 0", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         break;
                     case "^":
-                        val1 =  Math.pow(val1, val2);
+                        val1 = Math.pow(val1, val2);
                         break;
                 }
 
                 calc.setText(String.valueOf(val1));
+                clear();
+
             } else {
                 calc.setText(String.valueOf(val1));
+                clear();
             }
         } else {
-            Toast.makeText(this, "No input", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No input", Toast.LENGTH_SHORT).show();
         }
     }
 
